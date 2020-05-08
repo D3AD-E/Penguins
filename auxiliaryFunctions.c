@@ -5,10 +5,8 @@ extern const int COLUMNS;
 
 jmp_buf ebuf;
 
-
-int play_game(int argc, char* argv[], Tile **gameBoard, Player *playersArray)
+int play_game(int argc, char* argv[], Tile** gameBoard, Player* playersArray)
 {
-	
 	int numberPengueesToPlace;
 	int placementDone = 0; //Boolean to check if all the penguees have been placed
 	int noMoreMovement = 0; //Boolean to check if all the penguees have been placed
@@ -17,7 +15,7 @@ int play_game(int argc, char* argv[], Tile **gameBoard, Player *playersArray)
 	setjmp(ebuf);
 	system("cls");
 
-	//We need to detect if we are playing in automatic or interactive mode 
+	//We need to detect if we are playing in automatic or interactive mode
 	if (argc == 1) {
 		//Interactive mode
 		main_menu(gameBoard, playersArray);
@@ -32,8 +30,6 @@ int play_game(int argc, char* argv[], Tile **gameBoard, Player *playersArray)
 			//We read the size of the board before filling it
 			read_board_size(argv[2]);
 
-			
-
 			//We allocate memory so as to create the board
 			gameBoard = (Tile**)realloc(gameBoard, ROWS * sizeof(Tile*));
 			for (size_t i = 0; i < ROWS; i++)
@@ -43,11 +39,10 @@ int play_game(int argc, char* argv[], Tile **gameBoard, Player *playersArray)
 
 			//We now need to read the board's data
 			read_board_data(gameBoard, argv[2]);
-
 		}
 		else {
 			//Placement command line paramaters
-			
+
 			read_board_size(argv[3]);
 
 			//We allocate memory so as to create the board
@@ -63,14 +58,10 @@ int play_game(int argc, char* argv[], Tile **gameBoard, Player *playersArray)
 
 			//For placement phase we need to verify that our computer is registered
 			if (!computer_registered_on_file(argv[3])) {
-
 				//And we register our computer on the file
 				register_special_user(determine_computer_iD(argv[3]), read_computer_pseudo(), argv[3]);
 			}
-
 		}
-
-		
 
 		//Then, we create a new player that it will play by the computer
 
@@ -79,67 +70,47 @@ int play_game(int argc, char* argv[], Tile **gameBoard, Player *playersArray)
 		computer.playerPoints = 0; // we need to use the function to collect the points
 		computer.penguinAmount = count_player_penguins(computer.playeriD);
 
-
-		
-		
-
-		
-
-
-
 		/*We will now detect each phase of the game, our program should execute*/
 		if (detect_game_phase(argv[1])) {
-
 			/*###########################################
 							 PLACEMENT PHASE
 			#############################################*/
 			gamePhase = PLACEMENT;
 
-			
-
 			/*We verify that this special player (computer) is registered in the file
 			by verifying the number of its penguins currently placed on the board*/
-
-
 
 			//We first calculate the max number of penguins to place on the board
 			numberPengueesToPlace = retrieve_max_penguins(argv[2]);
 
-
 			//Then we try the placement phase
-			if (penguin_placement(numberPengueesToPlace,&computer,gameBoard,AUTOMATIC)) {
+			if (penguin_placement(numberPengueesToPlace, &computer, gameBoard, AUTOMATIC)) {
 				placementDone = 1;
 			}
 		}
 		else {
-
 			/*###########################################
 							MOVEMENT PHASE
 			#############################################*/
 			gamePhase = MOVEMENT;
 			//We specify that we are in movement phase
 
-			
 			//We verify that we have penguins otherwise we can skip the movement procedure
 			if (count_player_penguins(computer.playeriD) == 0) {
 				noMoreMovement = 1;
 				goto EXITPROCEDURE;
 			}
 
-			
 			noMoreMovement = penguin_move(gameBoard, AUTOMATIC, &computer, 1);
-
 
 			//You can now save the changement on the board file
 
 			save_board(gameBoard, argv[2]);
 
 			update_points(argv[2], computer.playeriD, computer.playerPoints);
-
 		}
 
 	EXITPROCEDURE:
-
 
 		//before quitting the program, we free the memory allocated for the board.
 		//so as to avoid memory's leak...
@@ -149,11 +120,8 @@ int play_game(int argc, char* argv[], Tile **gameBoard, Player *playersArray)
 		}
 		free(gameBoard);
 
-
-
 		//We return a specific value 1 or 0 depending on the phase we are
 		switch (gamePhase) {
-
 		case PLACEMENT:
 			return placementDone == 1 ? 1 : 0;
 
@@ -166,10 +134,9 @@ int play_game(int argc, char* argv[], Tile **gameBoard, Player *playersArray)
 	}
 }
 
-
-int detect_game_phase(char *phase)
+int detect_game_phase(char* phase)
 {
-	char *dataInput = NULL;
+	char* dataInput = NULL;
 	char delimiter[2] = "=";
 
 	dataInput = strtok(phase, delimiter);
@@ -177,9 +144,6 @@ int detect_game_phase(char *phase)
 
 	return strcmp(dataInput, "movement") == 0 ? 0 : 1;
 }
-
-
-
 
 int getDataInput(char data[500])
 {
@@ -225,17 +189,16 @@ void scrollToTop()
 	CONSOLE_SCREEN_BUFFER_INFO coinfo; //element that will contain the current position of the cursor
 	SMALL_RECT rectangle; //A rectangle that will have the dimension of the windows console
 
-	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coinfo); 
-
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coinfo);
 
 	//Then we define the new coordinate of our rectangle
-	rectangle.Top =- (SHORT)coinfo.dwCursorPosition.Y;
+	rectangle.Top = -(SHORT)coinfo.dwCursorPosition.Y;
 	rectangle.Bottom = -(SHORT)coinfo.dwCursorPosition.Y;
 	rectangle.Left = 0;
 	rectangle.Right = 0;
 
 	//We now move our rectangle to its new coordinate
-	SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE),FALSE, &rectangle);
+	SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &rectangle);
 }
 
 Position get_coordinate_desired_tile(COORD topBoardPosition, COORD bottomBoardPosition, COORD* desiredTilePosition) {
@@ -246,10 +209,10 @@ Position get_coordinate_desired_tile(COORD topBoardPosition, COORD bottomBoardPo
 	char keyTapped;
 
 	//We set the initial position
-	
-	originalPosition.X = topBoardPosition.X + 2*2;
+
+	originalPosition.X = topBoardPosition.X + 2 * 2;
 	originalPosition.Y = topBoardPosition.Y + 1;
-	
+
 	if (desiredTilePosition == NULL) {
 		setCursorPosition(originalPosition.X, originalPosition.Y);
 	}
@@ -266,12 +229,10 @@ Position get_coordinate_desired_tile(COORD topBoardPosition, COORD bottomBoardPo
 			//We are waiting for the user to tap on a valid key
 		}
 
-
 		keyTapped = _getch();
 		keyTapped = keyTapped != -32 ? keyTapped : _getch(); //We do that two times if the key detected is an arrow key
 
 		switch (keyTapped) {
-
 		case 27:
 			longjmp(ebuf, 0);
 			break;
@@ -318,7 +279,7 @@ Position get_coordinate_desired_tile(COORD topBoardPosition, COORD bottomBoardPo
 	}
 EXIT:
 
-	//We set the cursor at the bottom of the board 
+	//We set the cursor at the bottom of the board
 	setCursorPosition(bottomBoardPosition.X, bottomBoardPosition.Y);
 
 	//We send the coordinates of the desired tile
@@ -329,36 +290,29 @@ EXIT:
 }
 #endif
 
-
-char * find_id_player(char * data)
+char* find_id_player(char* data)
 {
-	return strtok(data," ");
+	return strtok(data, " ");
 }
 
-
-
-int penguin_placement(int maxPenguins, Player *currentPlayer, Tile ** board, ModeGame game_mode)
+int penguin_placement(int maxPenguins, Player* currentPlayer, Tile** board, ModeGame game_mode)
 {
-	#ifdef _WIN64
+#ifdef _WIN64
 	COORD topBoardPosition;
 	COORD bottomBoardPosition;
 	COORD messageErrorPosition;
-	#endif
-
+#endif
 
 	Position desiredTile;
 	char* messageError;
 
-	
 	//We first clean the console
 	system("cls");
-	
-	
+
 	if (game_mode == INTERACTIVE) {
-		#ifdef _WIN64
+#ifdef _WIN64
 		//First of all we verify that the player can place a penguee
 		if (count_player_penguins(currentPlayer->playeriD) != maxPenguins) {
-
 			while (1) {
 				print_placement_phase();
 
@@ -367,7 +321,6 @@ int penguin_placement(int maxPenguins, Player *currentPlayer, Tile ** board, Mod
 
 				//We display the board
 				print_board(board);
-
 
 				//We retrieve the position of the bottom of the board
 				bottomBoardPosition = getCursorPosition();
@@ -383,11 +336,11 @@ int penguin_placement(int maxPenguins, Player *currentPlayer, Tile ** board, Mod
 
 				//We also print the number of remaining fish to place
 				changeColor(RED);
-				printf("Remember that you still have to place %d penguins on the board\n",maxPenguins - count_player_penguins(currentPlayer->playeriD));
+				printf("Remember that you still have to place %d penguins on the board\n", maxPenguins - count_player_penguins(currentPlayer->playeriD));
 				changeColor(WHITE);
 
 				//The player selects a tile
-				desiredTile = get_coordinate_desired_tile(topBoardPosition, bottomBoardPosition,NULL);
+				desiredTile = get_coordinate_desired_tile(topBoardPosition, bottomBoardPosition, NULL);
 
 				//We verify the tile
 				if (board[desiredTile.rowNumber][desiredTile.columnNumber].idPlayer == 0 &&
@@ -397,9 +350,8 @@ int penguin_placement(int maxPenguins, Player *currentPlayer, Tile ** board, Mod
 
 					//We will remove the fish from the tile and give one point to the player
 					board[desiredTile.rowNumber][desiredTile.columnNumber].fishNumber = 0;
-					
-					currentPlayer->playerPoints = currentPlayer->playerPoints + 1;
 
+					currentPlayer->playerPoints = currentPlayer->playerPoints + 1;
 
 					changeColor(YELLOW);
 					setCursorPosition(bottomBoardPosition.X, bottomBoardPosition.Y + 4);
@@ -407,27 +359,21 @@ int penguin_placement(int maxPenguins, Player *currentPlayer, Tile ** board, Mod
 					save_board(board, "board.txt");
 					changeColor(WHITE);
 
-
-
 					Sleep(1000);
 					break;
 				}
 				else {
-
 					changeColor(RED);
 
 					setCursorPosition(bottomBoardPosition.X, bottomBoardPosition.Y + 4);
 
 					if (board[desiredTile.rowNumber][desiredTile.columnNumber].idPlayer == 0 &&
 						board[desiredTile.rowNumber][desiredTile.columnNumber].fishNumber == 0) {
-
 						messageErrorPosition = getCursorPosition();
 						messageError = "You cannot place your penguin in water...\n";
 						printf("%s\n", messageError);
-						
 					}
 					else if (board[desiredTile.rowNumber][desiredTile.columnNumber].idPlayer != 0) {
-
 						messageErrorPosition = getCursorPosition();
 						messageError = "An other player is already on this tile...\n";
 						printf("%s\n", messageError);
@@ -442,7 +388,6 @@ int penguin_placement(int maxPenguins, Player *currentPlayer, Tile ** board, Mod
 					Sleep(1500);
 					suppress_line_buffer(messageErrorPosition, strlen(messageError));
 					system("cls");
-
 				}
 			}
 			return 0;
@@ -450,7 +395,7 @@ int penguin_placement(int maxPenguins, Player *currentPlayer, Tile ** board, Mod
 		else {
 			return 1;
 		}
-		#endif
+#endif
 	}
 	else {
 		ai_placement(board, currentPlayer);
@@ -458,13 +403,12 @@ int penguin_placement(int maxPenguins, Player *currentPlayer, Tile ** board, Mod
 	}
 }
 
-void run_placement_stage(Tile ** board, Player *playersArray,int numberOfPlayers)
+void run_placement_stage(Tile** board, Player* playersArray, int numberOfPlayers)
 {
 	int exitStage = 0;
 	int numberOfPenguinsToPlace;
 
 	//We read data from the board file
-
 
 	//We define how many penguins the players need to place
 	switch (numberOfPlayers)
@@ -490,10 +434,9 @@ void run_placement_stage(Tile ** board, Player *playersArray,int numberOfPlayers
 	while (!exitStage) {
 		for (size_t i = 0; i < numberOfPlayers; i++)
 		{
-			exitStage = penguin_placement(numberOfPenguinsToPlace,&playersArray[i],board,INTERACTIVE);
+			exitStage = penguin_placement(numberOfPenguinsToPlace, &playersArray[i], board, INTERACTIVE);
 		}
 	}
-	
 
 	//We verify if there are penguins that are stuck
 	for (size_t i = 1; i <= numberOfPlayers; i++)
@@ -504,9 +447,9 @@ void run_placement_stage(Tile ** board, Player *playersArray,int numberOfPlayers
 	return;
 }
 
-int retrieve_max_penguins(char * data)
+int retrieve_max_penguins(char* data)
 {
-	char *pointerToNumPenguins;
+	char* pointerToNumPenguins;
 
 	pointerToNumPenguins = strchr(data, '=');
 
@@ -515,11 +458,10 @@ int retrieve_max_penguins(char * data)
 	return (*pointerToNumPenguins) - 48;
 }
 
-Player* register_players(Player *playersArray, int *numberPlayers)
+Player* register_players(Player* playersArray, int* numberPlayers)
 {
 	char userInput[500];
 	int numberOfPlayers;
-	
 
 	changeColor(RED);
 	printf("Please indicate the number of persons playing the game:\n");
@@ -541,19 +483,18 @@ Player* register_players(Player *playersArray, int *numberPlayers)
 		printf("\nPlease indicate the number of persons playing the game:\n");
 	}
 
-
 	//We retrieve the number of players who will play the game
 	numberOfPlayers = atoi(userInput);
 
 	//Now we will create the array that will contain all the data concerning the players
-	playersArray = (Player*) realloc(playersArray,numberOfPlayers * sizeof(Player));
-	
+	playersArray = (Player*)realloc(playersArray, numberOfPlayers * sizeof(Player));
+
 	//Now we will ask the user to enter some data to identify him/her
 	for (size_t i = 0; i < numberOfPlayers; i++)
 	{
 		while (1) {
 			changeColor(RED);
-			printf("\nPlease Player %d enter the pseudo you want to play with:\n", i+1);
+			printf("\nPlease Player %d enter the pseudo you want to play with:\n", i + 1);
 			changeColor(YELLOW);
 			getDataInput(userInput);
 
@@ -574,7 +515,7 @@ Player* register_players(Player *playersArray, int *numberPlayers)
 
 	//We change the color to white
 	changeColor(WHITE);
-	
+
 	//We clean the console
 	system("cls");
 
@@ -584,11 +525,7 @@ Player* register_players(Player *playersArray, int *numberPlayers)
 	return playersArray;
 }
 
-char * read_computer_pseudo()
+char* read_computer_pseudo()
 {
 	return "YouWillNotWin05";
 }
-
-
-
-

@@ -9,4 +9,3 @@ struct Position {
 };
 
 #endif // !POSITION_H
-

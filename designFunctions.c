@@ -7,22 +7,17 @@
 #include <Windows.h>
 #endif
 
-
 extern  int ROWS;
 extern  int COLUMNS;
 
-
-
-
-
 void changeColor(Color color) {
-	#ifdef _WIN64
+#ifdef _WIN64
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-	#endif
+#endif
 }
 
 #ifdef _WIN64
-void main_menu(Tile **gameBoard, Player *playersArray)
+void main_menu(Tile** gameBoard, Player* playersArray)
 {
 	char characterEntered;
 	COORD cursorPosition = { 0,0 };
@@ -34,8 +29,6 @@ void main_menu(Tile **gameBoard, Player *playersArray)
 
 	//We will wait until the user chose the quit program
 	while (1) {
-		
-
 		//We will wait until the user taped on the enter key
 		while (1) {
 			while (_kbhit() == 0) {
@@ -64,7 +57,6 @@ void main_menu(Tile **gameBoard, Player *playersArray)
 		}
 	LINESELECTIONSTOP:
 
-
 		//Now we will execute the chosen function
 		switch (lineNumber) {
 		case 1:
@@ -75,7 +67,6 @@ void main_menu(Tile **gameBoard, Player *playersArray)
 			playersArray = register_players(playersArray, &numberOfPlayers);
 
 			switch (numberOfPlayers) {
-
 			case 2:
 			case 3:
 				ROWS = 6;
@@ -97,30 +88,22 @@ void main_menu(Tile **gameBoard, Player *playersArray)
 				break;
 			}
 
-			
-
 			//We then generate our dynamic board;
 			gameBoard = generate_board(gameBoard, numberOfPlayers);
 
-
 			//We save the data concerning the players on the board file
-			save_id_players_file(playersArray,numberOfPlayers);
-
-			
+			save_id_players_file(playersArray, numberOfPlayers);
 
 			//We can now start the placement phase
-			run_placement_stage(gameBoard,playersArray,numberOfPlayers);
+			run_placement_stage(gameBoard, playersArray, numberOfPlayers);
 
-			
 			//We can now run movement phase
 			penguin_move(gameBoard, INTERACTIVE, playersArray, numberOfPlayers);
-
 
 			//Displaying results (who is the winner of the game)
 
 			//We free the memory
 			free_memory(playersArray, gameBoard);
-			
 
 			delete_board();
 			changeParagraph(cursorPosition, 1);
@@ -133,7 +116,7 @@ void main_menu(Tile **gameBoard, Player *playersArray)
 			break;
 
 		case 3:
-			//We will load a game 
+			//We will load a game
 			break;
 
 		case 4:
@@ -146,7 +129,7 @@ void main_menu(Tile **gameBoard, Player *playersArray)
 			break;
 		}
 	}
-	ENDOFPROGRAM:
+ENDOFPROGRAM:
 	return;
 }
 #endif
@@ -155,15 +138,13 @@ void main_menu(Tile **gameBoard, Player *playersArray)
 void changeParagraph(COORD position, int line_number)
 {
 	//We set the cursor to the position that we got previously
-	setCursorPosition(0,0);
+	setCursorPosition(0, 0);
 
 	printf(" ----------------------\n");
 	printf("|  HEY THAT'S MY FISH  |\n");
 	printf(" ----------------------\n\n");
 
-
 	switch (line_number) {
-
 	case 1:
 		changeColor(BLUE);
 		printf("| Start a new game\n");
@@ -206,7 +187,6 @@ void changeParagraph(COORD position, int line_number)
 
 	default:
 		break;
-
 	}
 }
 #endif
@@ -214,7 +194,7 @@ void changeParagraph(COORD position, int line_number)
 #ifdef _WIN64
 void read_documentation()
 {
-	FILE *file = NULL;
+	FILE* file = NULL;
 	char line[MAX_SIZE] = "";
 	COORD beginConsole = { 0,0 };
 	//Cleaning the console
@@ -227,7 +207,7 @@ void read_documentation()
 
 	//We will now try to open the file explaining all the rules of the game
 
-	if ((file = fopen("gameRules.txt","r")) != NULL) {
+	if ((file = fopen("gameRules.txt", "r")) != NULL) {
 		while (fgets(line, MAX_SIZE, file) != NULL) {
 			puts(line);
 		}
@@ -245,14 +225,12 @@ void read_documentation()
 	scrollToTop();
 
 	while (_getch() != 13) {
-
 	}
 
 	system("cls");
 }
 
-
-void print_board(Tile ** board)
+void print_board(Tile** board)
 {
 	shift_cursor();
 	//Printing the top of the board
@@ -265,7 +243,6 @@ void print_board(Tile ** board)
 	}
 	printf("\\");
 	printf("\n");
-	
 
 	for (size_t i = 0; i < ROWS; i++)
 	{
@@ -291,7 +268,7 @@ void print_board(Tile ** board)
 	}
 
 BOARDEND:
-	
+
 	//We print the bottom of the board
 	for (size_t i = 0; i < COLUMNS; i++)
 	{
@@ -309,7 +286,7 @@ BOARDEND:
 
 void shift_cursor()
 {
-	setCursorPosition(getCursorPosition().X+2, getCursorPosition().Y);
+	setCursorPosition(getCursorPosition().X + 2, getCursorPosition().Y);
 }
 
 void print_placement_phase()
@@ -319,16 +296,14 @@ void print_placement_phase()
 	printf("===============================\n\n");
 }
 
-
 #ifdef _WIN64
-void color_player_penguins(Tile ** board, int idPlayer,COORD topBoardPosition, COORD bottomBoardPosition)
+void color_player_penguins(Tile** board, int idPlayer, COORD topBoardPosition, COORD bottomBoardPosition)
 {
 	COORD firstTilePosition;//correspond to the position of the first tile. It's a kind of marker
 	COORD tileToColorPosition;
 	firstTilePosition.X = topBoardPosition.X + 2;
 	firstTilePosition.Y = topBoardPosition.Y + 1;
 
-	
 	//Now we are going to go through the board so as to retrieve tiles where there are player's penguins
 	for (size_t i = 0; i < ROWS; i++)
 	{
@@ -348,7 +323,7 @@ void color_player_penguins(Tile ** board, int idPlayer,COORD topBoardPosition, C
 #endif
 
 #ifdef _WIN64
-void color_tile(COORD tilePosition, Tile **board, int row, int column, int EmptyTile)
+void color_tile(COORD tilePosition, Tile** board, int row, int column, int EmptyTile)
 {
 	//We change the color of the text into a pretty yellow
 	if (EmptyTile == 1)
@@ -361,7 +336,7 @@ void color_tile(COORD tilePosition, Tile **board, int row, int column, int Empty
 	}
 
 	//We print the first line of the tile
-	setCursorPosition(tilePosition.X, tilePosition.Y-1);
+	setCursorPosition(tilePosition.X, tilePosition.Y - 1);
 	if (row == 0 && column == 0) {
 		printf("/---+");
 	}
@@ -375,7 +350,6 @@ void color_tile(COORD tilePosition, Tile **board, int row, int column, int Empty
 
 	//We print the second line of the tile
 	setCursorPosition(tilePosition.X, tilePosition.Y);
-	
 
 	if (EmptyTile == 1)
 	{
@@ -388,10 +362,10 @@ void color_tile(COORD tilePosition, Tile **board, int row, int column, int Empty
 
 	//We print the third line of the tile
 	setCursorPosition(tilePosition.X, tilePosition.Y + 1);
-	if (row == ROWS-1 && column == 0) {
+	if (row == ROWS - 1 && column == 0) {
 		printf("\\---+");
 	}
-	else if (row == ROWS-1 && column == COLUMNS - 1) {
+	else if (row == ROWS - 1 && column == COLUMNS - 1) {
 		printf("+---/");
 	}
 	else
@@ -404,7 +378,6 @@ void color_tile(COORD tilePosition, Tile **board, int row, int column, int Empty
 }
 #endif
 
-
 void print_movement_phase()
 {
 	printf("===============================\n");
@@ -412,8 +385,7 @@ void print_movement_phase()
 	printf("===============================\n\n");
 }
 
-
-void print_scores(Player *playersArray, int numberOfPlayers)
+void print_scores(Player* playersArray, int numberOfPlayers)
 {
 	printf("Nick\t ID \t Fish\n");
 	for (int i = 0; i < numberOfPlayers; i++) {
@@ -422,13 +394,12 @@ void print_scores(Player *playersArray, int numberOfPlayers)
 	return;
 }
 
-void color_holes(Tile ** board, COORD topBoardPosition, COORD bottomBoardPosition)
+void color_holes(Tile** board, COORD topBoardPosition, COORD bottomBoardPosition)
 {
 	COORD firstTilePosition;//correspond to the position of the first tile. It's a kind of marker
 	COORD tileToColorPosition;
 	firstTilePosition.X = topBoardPosition.X + 2;
 	firstTilePosition.Y = topBoardPosition.Y + 1;
-
 
 	//Now we are going to go through the board so as to retrieve tiles where there are player's penguins
 	for (size_t i = 0; i < ROWS; i++)
@@ -447,8 +418,6 @@ void color_holes(Tile ** board, COORD topBoardPosition, COORD bottomBoardPositio
 	setCursorPosition(bottomBoardPosition.X, bottomBoardPosition.Y);
 }
 
-
-
 void suppress_line_buffer(COORD messageErrorPosition, short messageLen)
 {
 	setCursorPosition(messageErrorPosition.X, messageErrorPosition.Y);
@@ -458,6 +427,6 @@ void suppress_line_buffer(COORD messageErrorPosition, short messageLen)
 		fputc(' ', stdout);
 	}
 
-	setCursorPosition(0,0);
+	setCursorPosition(0, 0);
 }
 #endif

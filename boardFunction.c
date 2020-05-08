@@ -3,11 +3,10 @@
 extern  int ROWS;
 extern  int COLUMNS;
 
-
-Tile** generate_board(Tile **gameBoard, int numberOfPlayers)
+Tile** generate_board(Tile** gameBoard, int numberOfPlayers)
 {
 	//Let's create the board with the squares
-	gameBoard = (Tile**)realloc(gameBoard,sizeof(Tile*) * ROWS);
+	gameBoard = (Tile**)realloc(gameBoard, sizeof(Tile*) * ROWS);
 	for (size_t i = 0; i < ROWS; i++)
 	{
 		gameBoard[i] = (Tile*)malloc(sizeof(Tile) * COLUMNS);
@@ -20,14 +19,11 @@ Tile** generate_board(Tile **gameBoard, int numberOfPlayers)
 
 	save_board(gameBoard, "board.txt");
 
-	
-
 	return gameBoard;
 }
 
-void fill_board(Tile **board)
+void fill_board(Tile** board)
 {
-
 	int numberFishesToPlace;
 
 	srand((unsigned)time(NULL)); //initialisation for the random fonction
@@ -45,15 +41,13 @@ void fill_board(Tile **board)
 	}
 }
 
-int save_board(Tile **board, char* fileName)
+int save_board(Tile** board, char* fileName)
 {
 	FILE* fileBoard;
 
 	if ((fileBoard = fopen(fileName, "r+")) != NULL) {
-		
 		//We place the cursor at the beginning of the file
 		fseek(fileBoard, 0, SEEK_SET);
-
 
 		//First of all we write the size of the board
 		fprintf(fileBoard, "%d %d\n", ROWS, COLUMNS);
@@ -61,13 +55,13 @@ int save_board(Tile **board, char* fileName)
 		//Secondly we will replace the board data
 		for (size_t i = 0; i < ROWS; i++)
 		{
-			for (size_t j = 0; j < COLUMNS-1; j++)
+			for (size_t j = 0; j < COLUMNS - 1; j++)
 			{
-				fprintf(fileBoard,"%d%d ", board[i][j].fishNumber, board[i][j].idPlayer);
+				fprintf(fileBoard, "%d%d ", board[i][j].fishNumber, board[i][j].idPlayer);
 			}
-			fprintf(fileBoard, "%d%d\n", board[i][COLUMNS-1].fishNumber, board[i][COLUMNS-1].idPlayer);
+			fprintf(fileBoard, "%d%d\n", board[i][COLUMNS - 1].fishNumber, board[i][COLUMNS - 1].idPlayer);
 		}
-		
+
 		fclose(fileBoard);
 	}
 	else {
@@ -76,18 +70,15 @@ int save_board(Tile **board, char* fileName)
 		exit(2);
 	}
 
-
-
 	return 0;
 }
 
-void save_id_players_file(Player *userData, int numberPlayers)
+void save_id_players_file(Player* userData, int numberPlayers)
 {
 	FILE* inputFile = NULL;
 
 	//We will try to open the board file and we place the cursor at the end
-	if ((inputFile = fopen("board.txt", "a")) !=  NULL) {
-
+	if ((inputFile = fopen("board.txt", "a")) != NULL) {
 		for (size_t i = 0; i < numberPlayers; i++)
 		{
 			fprintf(inputFile, "%s %d 0\n", userData[i], i + 1);
@@ -110,7 +101,6 @@ int count_player_penguins(int idPlayer)
 
 	//We will try to open the board file
 	if ((inputFile = fopen("board.txt", "r")) != NULL) {
-
 		while (fgets(dataInput, 500, inputFile) != NULL) {
 			line++;
 
@@ -128,8 +118,6 @@ int count_player_penguins(int idPlayer)
 				if ((dataInput[i] - 48) == idPlayer) { numberPenguins++; }
 			}
 		}
-
-		
 	}
 	else {
 		printf("Error retrieved while trying to open the file: error code\n");
@@ -148,7 +136,6 @@ void read_players_id()
 
 	//We will try to open the board file
 	if ((inputFile = fopen("board.txt", "r")) == 0) {
-
 		//We will place the cursor so as to read only the id of the players
 		for (size_t i = 0; i <= ROWS; i++)
 		{
@@ -158,7 +145,6 @@ void read_players_id()
 		while (fgets(dataInput, 500, inputFile) != NULL)
 		{
 			printf("%s\n\n", find_id_player(dataInput));
-
 		}
 
 		//We close the stream with the file.
@@ -175,18 +161,17 @@ void delete_board()
 	remove("board.txt");
 }
 
-void register_special_user(int idComputer,char *pseudoComputer, char *boardName)
+void register_special_user(int idComputer, char* pseudoComputer, char* boardName)
 {
-	FILE *boardFile;
+	FILE* boardFile;
 	char character_detected;
 
-	if ((boardFile = fopen(boardName,"a+")) != NULL) {
-
+	if ((boardFile = fopen(boardName, "a+")) != NULL) {
 		//We verify the previous character
 		fseek(boardFile, -1, SEEK_END);
 		character_detected = fgetc(boardFile);
-		
-		if(isdigit(character_detected)){
+
+		if (isdigit(character_detected)) {
 			fseek(boardFile, 0, SEEK_END);
 			fprintf(boardFile, "\n%s %d %d", pseudoComputer, idComputer, 0);
 		}
@@ -207,42 +192,36 @@ void register_special_user(int idComputer,char *pseudoComputer, char *boardName)
 	}
 }
 
-void read_board_data(Tile **board, char *fileName)
+void read_board_data(Tile** board, char* fileName)
 {
-	FILE *boardFile;
-	char *data;
+	FILE* boardFile;
+	char* data;
 	char lineData[500];
 	int numberFish;
 	int idPlayer;
 
 	if ((boardFile = fopen(fileName, "r")) != NULL) {
-
 		//We skip the first line
 		fgets(lineData, 500, boardFile);
 
-		
 		//We fill the array
 		for (size_t i = 0; i < ROWS; i++)
 		{
 			//We read the line number i + 1
 			fgets(lineData, 500, boardFile);
 
-
 			for (size_t j = 0; j < COLUMNS; j++)
 			{
-				
 				if (j == 0) {
-
 					data = strtok(lineData, " ");
 
 					if (sscanf(data, "%1d%1d", &numberFish, &idPlayer) != 2) {
-						fputs("Bad format for describing a tile's data has been detected! Quitting the program..\n",stderr);
+						fputs("Bad format for describing a tile's data has been detected! Quitting the program..\n", stderr);
 						exit(2);
 					}
-					
+
 					board[i][j].fishNumber = numberFish;
 					board[i][j].idPlayer = idPlayer;
-
 				}
 				else {
 					data = strtok(NULL, " ");
@@ -256,7 +235,6 @@ void read_board_data(Tile **board, char *fileName)
 					board[i][j].idPlayer = idPlayer;
 				}
 			}
-			
 		}
 		//we close the file
 		fclose(boardFile);
@@ -268,7 +246,7 @@ void read_board_data(Tile **board, char *fileName)
 	}
 }
 
-void penguin_removal(Tile ** board, int PlayerNumL) //REMOVE A PENGUIN IF IT IS NOT ABLE TO MOVE
+void penguin_removal(Tile** board, int PlayerNumL) //REMOVE A PENGUIN IF IT IS NOT ABLE TO MOVE
 {
 	bool BadPenguin;
 	for (int j = 0; j < ROWS; j++)
@@ -283,17 +261,17 @@ void penguin_removal(Tile ** board, int PlayerNumL) //REMOVE A PENGUIN IF IT IS 
 					if (board[j][i + 1].fishNumber == 0 && board[j + 1][i].fishNumber == 0)
 						BadPenguin = true;
 				}
-				else if (j == ROWS-1 && i == COLUMNS-1)
+				else if (j == ROWS - 1 && i == COLUMNS - 1)
 				{
 					if (board[j][i - 1].fishNumber == 0 && board[j - 1][i].fishNumber == 0)
 						BadPenguin = true;
 				}
-				else if (j == ROWS-1 && i == 0)
+				else if (j == ROWS - 1 && i == 0)
 				{
 					if (board[j - 1][i].fishNumber == 0 && board[j][i + 1].fishNumber == 0)
 						BadPenguin = true;
 				}
-				else if (j == 0 && i == COLUMNS-1)
+				else if (j == 0 && i == COLUMNS - 1)
 				{
 					if (board[j + 1][i].fishNumber == 0 && board[j][i - 1].fishNumber == 0)
 						BadPenguin = true;
@@ -308,12 +286,12 @@ void penguin_removal(Tile ** board, int PlayerNumL) //REMOVE A PENGUIN IF IT IS 
 					if (board[j][i + 1].fishNumber == 0 && board[j + 1][i].fishNumber == 0 && board[j - 1][i].fishNumber == 0)
 						BadPenguin = true;
 				}
-				else if (j == ROWS-1)
+				else if (j == ROWS - 1)
 				{
 					if (board[j][i + 1].fishNumber == 0 && board[j - 1][i].fishNumber == 0 && board[j][i - 1].fishNumber == 0)
 						BadPenguin = true;
 				}
-				else if (i == COLUMNS-1)
+				else if (i == COLUMNS - 1)
 				{
 					if (board[j][i - 1].fishNumber == 0 && board[j - 1][i].fishNumber == 0 && board[j + 1][i].fishNumber == 0)
 						BadPenguin = true;
@@ -335,14 +313,13 @@ void penguin_removal(Tile ** board, int PlayerNumL) //REMOVE A PENGUIN IF IT IS 
 	return;
 }
 
-void change_board(Tile ** board, int missingNumberOfTiles) {
-	Tile **tilesArray; //Array containing the tiles with 2 or 3 penguins on it
+void change_board(Tile** board, int missingNumberOfTiles) {
+	Tile** tilesArray; //Array containing the tiles with 2 or 3 penguins on it
 	int numberTiles = 0; //integer than count the number of tiles with 2 or 3 penguins on it
 	int sizeArray;
 	int indexSelected;
 
-
-	tilesArray = (Tile*)calloc(0,sizeof(Tile));
+	tilesArray = (Tile*)calloc(0, sizeof(Tile));
 
 	//We are looking for the specific tiles
 	for (size_t i = 0; i < ROWS; i++)
@@ -350,9 +327,8 @@ void change_board(Tile ** board, int missingNumberOfTiles) {
 		for (size_t j = 0; j < COLUMNS; j++)
 		{
 			if (board[i][j].fishNumber != 1) {
-				
 				numberTiles++;
-			
+
 				tilesArray = (Tile*)realloc(tilesArray, numberTiles * sizeof(Tile));
 				tilesArray[numberTiles - 1] = &board[i][j];
 			}
@@ -369,7 +345,7 @@ void change_board(Tile ** board, int missingNumberOfTiles) {
 		//We select an index
 		indexSelected = rand() % sizeArray;
 		//We verify that the pointer points to a Tile
-		if ( tilesArray[indexSelected] != NULL) {
+		if (tilesArray[indexSelected] != NULL) {
 			tilesArray[indexSelected]->fishNumber = 1;
 			tilesArray[indexSelected] = NULL; // We prevent to select this tile once again
 			missingNumberOfTiles--;
@@ -378,22 +354,19 @@ void change_board(Tile ** board, int missingNumberOfTiles) {
 
 	free(tilesArray);
 	return;
-
 }
 
-void read_board_size(char *nameFile)
+void read_board_size(char* nameFile)
 {
-	FILE *boardFile;
+	FILE* boardFile;
 
 	int rowsNumber;
 	int columnsNumber;
-
 
 	if ((boardFile = fopen(nameFile, "r")) != NULL) {
 		//file opened
 
 		//Now we will retrieve the size of the array
-
 
 		//First of all, we place the pointor at the beginning of the file (Security parameter)
 		rewind(boardFile);
@@ -416,7 +389,7 @@ void read_board_size(char *nameFile)
 	}
 }
 
-void update_board_movement(Tile ** board,const Position initialPosition, const Position finalPosition, int *numberFishCollected, int idComputer)
+void update_board_movement(Tile** board, const Position initialPosition, const Position finalPosition, int* numberFishCollected, int idComputer)
 {
 	int newValueFishCollected;
 
@@ -425,16 +398,14 @@ void update_board_movement(Tile ** board,const Position initialPosition, const P
 
 	*numberFishCollected = *numberFishCollected + newValueFishCollected;
 
-
 	board[finalPosition.rowNumber][finalPosition.columnNumber].idPlayer = idComputer;
-
 
 	//We transform the former penguin's tile into water
 	board[initialPosition.rowNumber][initialPosition.columnNumber].fishNumber = 0;
 	board[initialPosition.rowNumber][initialPosition.columnNumber].idPlayer = 0;
 }
 
-int determine_computer_iD(char * boardFileName)
+int determine_computer_iD(char* boardFileName)
 {
 	FILE* boardFile;
 	char data[500];
@@ -442,35 +413,30 @@ int determine_computer_iD(char * boardFileName)
 	int iDLastPlayer;
 	int idPlayersFirstPosition;
 
-
 	if ((boardFile = fopen(boardFileName, "r")) != NULL) {
 		//The file was opened
 
 		//We fist need to verify if other players are registered on the file
-		for (size_t i = 1; i <= ROWS+1; i++)
+		for (size_t i = 1; i <= ROWS + 1; i++)
 		{
 			fgets(data, 500, boardFile);
 		}
 
 		//We verify if other players are registered on the board
 		idPlayersFirstPosition = ftell(boardFile);
-		if (fgets(data, 500, boardFile) == NULL) { 
+		if (fgets(data, 500, boardFile) == NULL) {
 			fclose(boardFile);
-			return 1; 
+			return 1;
 		}
 		//Otherwise we will take the id of the last computer registered incremented by one
 		fseek(boardFile, idPlayersFirstPosition, SEEK_SET);
-	
 
 		while (fgets(data, 500, boardFile) != NULL) {
-
 			if (sscanf(data, "%*s %d", &iDLastPlayer) != 1) {
 				fprintf(stderr, "Impossible to read the id of the last player.. Quitting the program!\n");
 				exit(2);
 			}
 		}
-
-		
 	}
 	else {
 		//Something bad happened
@@ -482,9 +448,9 @@ int determine_computer_iD(char * boardFileName)
 	return iDLastPlayer + 1;
 }
 
-void update_points(char *boardFileName,int iDComputer, int newValue)
+void update_points(char* boardFileName, int iDComputer, int newValue)
 {
-	FILE *boardFile;
+	FILE* boardFile;
 	char data[500];
 	char pseudoRead[500];
 	int positionBeginningLine;
@@ -493,24 +459,20 @@ void update_points(char *boardFileName,int iDComputer, int newValue)
 	if ((boardFile = fopen(boardFileName, "r+")) != NULL) {
 		//the file was opened successfully
 
-		for (size_t i = 1; i <= ROWS+1; i++)
+		for (size_t i = 1; i <= ROWS + 1; i++)
 		{
 			fgets(data, 500, boardFile);
 		}
 
-
 		//We are looking for the line on which our pseudo is written
 		while (1) {
-
 			positionBeginningLine = ftell(boardFile);
 
 			fgets(data, 500, boardFile);
 
 			sscanf(data, "%s", pseudoRead);
 
-
 			if (strcmp(pseudoRead, read_computer_pseudo()) == 0) {
-				
 				//We replace the cursor at the beginning of the line
 				fseek(boardFile, positionBeginningLine, SEEK_SET);
 
@@ -518,16 +480,13 @@ void update_points(char *boardFileName,int iDComputer, int newValue)
 				sscanf(data, "%*s %*d %d", &previousPlayerPoints);
 
 				//We replace the current line by the line containing the update
-				fprintf(boardFile, "%s %d %d", read_computer_pseudo(), iDComputer, newValue+previousPlayerPoints);
+				fprintf(boardFile, "%s %d %d", read_computer_pseudo(), iDComputer, newValue + previousPlayerPoints);
 
 				break;
-
-
 			}
 		}
 
 		fclose(boardFile);
-
 	}
 	else {
 		//an error occured while trying to open the file
@@ -536,20 +495,19 @@ void update_points(char *boardFileName,int iDComputer, int newValue)
 	}
 }
 
-int read_computer_id(char * boardFileName)
+int read_computer_id(char* boardFileName)
 {
-	FILE *boardFile;
+	FILE* boardFile;
 	char data[500];
 	char pseudoRead[500];
 	int iDComputer;
 	int beginningOfLine;
 
-
 	if ((boardFile = fopen(boardFileName, "r")) != NULL) {
 		//file opened
 
 		//We are looking for the ids
-		for (size_t i = 1; i <= ROWS+1; i++)
+		for (size_t i = 1; i <= ROWS + 1; i++)
 		{
 			fgets(data, 500, boardFile);
 		}
@@ -578,6 +536,3 @@ int read_computer_id(char * boardFileName)
 		exit(2);
 	}
 }
-
-
-

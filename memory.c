@@ -1,14 +1,13 @@
 #include "memory.h"
 
-
-void free_memory(Player * playersArray, Tile ** board)
+void free_memory(Player* playersArray, Tile** board)
 {
 	if (playersArray != NULL) {
 		free(playersArray);
 	}
 
 	if (board != NULL) {
-		for (size_t i = 0; i < (_msize(board)/sizeof(Tile*)); i++)
+		for (size_t i = 0; i < (_msize(board) / sizeof(Tile*)); i++)
 		{
 			free(board[i]);
 		}
@@ -16,14 +15,14 @@ void free_memory(Player * playersArray, Tile ** board)
 	}
 }
 
-Position * remove_element(Position * arrayToModify, const int indexElement)
+Position* remove_element(Position* arrayToModify, const int indexElement)
 {
-	Position *newArray;
+	Position* newArray;
 	int countElement = 0;
 
 	newArray = (Position*)calloc((_msize(arrayToModify) / sizeof(Position)) - 1, sizeof(Position));
 
-	for (size_t i = 0; i < _msize(arrayToModify)/sizeof(Position); i++)
+	for (size_t i = 0; i < _msize(arrayToModify) / sizeof(Position); i++)
 	{
 		if (i != indexElement) {
 			countElement++;
@@ -32,9 +31,7 @@ Position * remove_element(Position * arrayToModify, const int indexElement)
 		}
 	}
 
-
 	free(arrayToModify);
 
 	return newArray;
 }
-

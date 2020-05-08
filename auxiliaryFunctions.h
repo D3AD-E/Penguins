@@ -1,7 +1,6 @@
 #ifndef AUXILIARYFUNCTIONS_H
 #define AUXILIARYFUNCTIONS_H
 
-
 #include "designFunctions.h"
 #include "Position.h"
 #include "boardFunction.h"
@@ -22,10 +21,7 @@
 #include <Windows.h>
 #endif
 
-
 #include <setjmp.h>
-
-
 
 /*
 	play_game: functions that will permit to interact with the current mode in both interactive
@@ -35,8 +31,7 @@
 		1 ~ Movement impossible or placement done
 		0 ~ Placement or movement done with success
 */
-int play_game(int argc, char* argv[],Tile **gameBoard, Player *playersArray);
-
+int play_game(int argc, char* argv[], Tile** gameBoard, Player* playersArray);
 
 /*
 	detect_game_phase: functions that permits to determine if we are in placement or movement phase
@@ -48,15 +43,10 @@ int play_game(int argc, char* argv[],Tile **gameBoard, Player *playersArray);
 		1 ~ Placement Phase
 
 */
-int detect_game_phase(char *phase);
-
-
-
-
-
+int detect_game_phase(char* phase);
 
 /*
-retrieve_players_data: function that permits to collect the username of each player 
+retrieve_players_data: function that permits to collect the username of each player
 in an array.
 
 Exit:
@@ -64,8 +54,6 @@ Exit:
 
 */
 char** retrieve_players_data();
-
-
 
 /*
 getDataInput: function that allows to retrieve data given by the user and avoid a buffer
@@ -77,7 +65,6 @@ exit:
 	an integer so as to know if we could retrieve the data
 */
 int getDataInput(char data[500]);
-
 
 /*
 setCursorPosition: function that permits to set the new coordinate of the cursor in the
@@ -121,11 +108,8 @@ Exit:
 Position get_coordinate_desired_tile(COORD topBoardPosition, COORD bottomBoardPosition, COORD* desiredTilePosition);
 #endif
 
-
-
-
 /*
-find_id_player: function that permits to find the id of a player from the data read from the 
+find_id_player: function that permits to find the id of a player from the data read from the
 file
 
 Entry:
@@ -135,11 +119,10 @@ EXIT:
 */
 char* find_id_player(char* data);
 
-
 /*
 penguin_placement: function that will place a penguin on the board for a specific player
 
-Entry: 
+Entry:
 	idPlayer: the id of the player placing the penguin
 	maxPenguins: the maximum number of penguin that can be placed on the board
 	board: the game board
@@ -148,8 +131,7 @@ Exit:
 	1: means that the maximum number of penguins placed on the board has been reach
 	0: placement done with success
 */
-int penguin_placement(int maxPenguins, Player *currentPlayer, Tile ** board, ModeGame game_mode);
-
+int penguin_placement(int maxPenguins, Player* currentPlayer, Tile** board, ModeGame game_mode);
 
 /*
 run_placement_stage: functions that runs the placement stage (it's similar to the script
@@ -159,8 +141,7 @@ Parameters:
 	board: the board on which the players will place their penguins
 	numberOfPlayers: the number of players that will place penguins on the board
 */
-void run_placement_stage(Tile **board, Player *playersArray,int numberOfPlayers);
-
+void run_placement_stage(Tile** board, Player* playersArray, int numberOfPlayers);
 
 /*
 retrieve_max_penguins: function that permits to detect what is the maximum number of
@@ -172,8 +153,7 @@ Entry:
 Exit:
 	the maximum of penguins to place
 */
-int retrieve_max_penguins(char *data);
-
+int retrieve_max_penguins(char* data);
 
 /*
 register_players : functions that will permit to determine the number of players who
@@ -185,8 +165,7 @@ Parameter:
 Exit:
 	the array containing player's data
 */
-Player* register_players(Player *playersArray, int *numberPlayers);
-
+Player* register_players(Player* playersArray, int* numberPlayers);
 
 /*
 read_computer_pseudo: function that return the pseudo of the computer

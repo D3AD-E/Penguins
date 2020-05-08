@@ -6,13 +6,7 @@
 #include "designFunctions.h"
 #include "boardFunction.h"
 
-
-
-
-
 // MOVES PENGUINS FROM TILE TO TILE BY USER INPUT
-int penguin_move(Tile ** board, ModeGame game_mode, Player *playersArray, int numberOfPlayers);
-
-
+int penguin_move(Tile** board, ModeGame game_mode, Player* playersArray, int numberOfPlayers);
 
 #endif // MOVEMENT_H_INCLUDED

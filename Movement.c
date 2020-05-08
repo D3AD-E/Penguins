@@ -3,16 +3,12 @@
 extern const int ROWS;
 extern const int COLUMNS;
 
-
-
-
-
-int penguin_move(Tile ** board, ModeGame game_mode, Player *playersArray, int numberOfPlayers)
+int penguin_move(Tile** board, ModeGame game_mode, Player* playersArray, int numberOfPlayers)
 {
-	#ifdef _WIN64
+#ifdef _WIN64
 	COORD topBoardPosition;
 	COORD bottomBoardPosition;
-	#endif
+#endif
 
 	Position desiredTile;
 	bool Success = false;
@@ -22,8 +18,8 @@ int penguin_move(Tile ** board, ModeGame game_mode, Player *playersArray, int nu
 	int counter = 0;
 
 	if (game_mode == INTERACTIVE) {
-		#ifdef _WIN64
-		while (1) 
+#ifdef _WIN64
+		while (1)
 		{
 			for (int a = 0; a < numberOfPlayers; a++) {
 				Fail = false;
@@ -60,8 +56,6 @@ int penguin_move(Tile ** board, ModeGame game_mode, Player *playersArray, int nu
 					//We color the empty tiles
 					color_holes(board, topBoardPosition, bottomBoardPosition);
 
-					
-
 					setCursorPosition(bottomBoardPosition.X, bottomBoardPosition.Y + 2);
 					printf("------------------------------------------------------\n");
 
@@ -70,7 +64,7 @@ int penguin_move(Tile ** board, ModeGame game_mode, Player *playersArray, int nu
 					printf("Choose the penguin location(%s).", playersArray[a].playerPseudo);
 
 					Fail = false;
-					desiredTile = get_coordinate_desired_tile(topBoardPosition, bottomBoardPosition,NULL);
+					desiredTile = get_coordinate_desired_tile(topBoardPosition, bottomBoardPosition, NULL);
 					y = desiredTile.rowNumber;
 					x = desiredTile.columnNumber;
 					if (board[y][x].idPlayer != playersArray[a].playeriD)//ERROR PENGUIN NOT FOUND AT LOCATION
@@ -93,11 +87,8 @@ int penguin_move(Tile ** board, ModeGame game_mode, Player *playersArray, int nu
 
 						setCursorPosition(bottomBoardPosition.X, bottomBoardPosition.Y + 2);
 
-				
-
 						printf("------------------------------------------------------\n");
 						print_scores(playersArray, numberOfPlayers);
-
 
 						printf("Move to point.");
 						COORD pos = { x,y };
@@ -132,7 +123,6 @@ int penguin_move(Tile ** board, ModeGame game_mode, Player *playersArray, int nu
 							}
 							else
 							{
-
 								for (int yi = y + 1; yi < NewY; yi++)
 									if ((board[yi][x].idPlayer != 0) || (board[yi][x].fishNumber == 0))
 										Fail = true;
@@ -198,7 +188,6 @@ int penguin_move(Tile ** board, ModeGame game_mode, Player *playersArray, int nu
 				//We are waiting for the user to tap on a valid key
 			}
 
-
 			keyTapped = _getch();
 			keyTapped = keyTapped != -32 ? keyTapped : _getch(); //We do that two times if the key detected is an arrow key
 
@@ -209,11 +198,10 @@ int penguin_move(Tile ** board, ModeGame game_mode, Player *playersArray, int nu
 			}
 		}
 		return 0;
-		#endif
+#endif
 	}
 	else {
 		//Automatic phase
 		return ai_movement(board, playersArray->playeriD, &playersArray->playerPoints);
 	}
 }
-

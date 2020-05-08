@@ -3,7 +3,7 @@
 
 typedef struct Tile Tile;
 
-struct Tile 
+struct Tile
 {
 	short fishNumber;
 	short idPlayer;
@@ -11,6 +11,4 @@ struct Tile
 	short columnNumber;
 };
 
-
 #endif // !TILE_H
-

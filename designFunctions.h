@@ -13,7 +13,7 @@
 #include <conio.h>
 #endif
 
-#define MAX_SIZE 1000	
+#define MAX_SIZE 1000
 
 /*
 changeColor: changes the color of the text in the console.
@@ -28,16 +28,16 @@ main_menu: displays the game's main menu. The user will be able to start a new g
 read the rules of the game, load a previous game and can also quit the program.
 
 */
-void main_menu(Tile **gameBoard, Player *playersArray);
+void main_menu(Tile** gameBoard, Player* playersArray);
 
 /*
-changeParagraph: changes the color of the line in the main menu that the user needs to 
+changeParagraph: changes the color of the line in the main menu that the user needs to
 focus on. The user will be able to see to which part of the program, he or she will go
 after tapping on the enter key.
 
 Entry:
 	position: position of the cursor before displaying the main menu.
-	
+
 	line_number: the line that needs to have its color changed.
 */
 
@@ -56,7 +56,7 @@ print_board: function that prints the game's board onto the console
 
 Entry: game's board
 */
-void print_board(Tile **board);
+void print_board(Tile** board);
 
 /*
 shift_cursor: functions so as to shift the cursor so that the board is not closed to
@@ -69,7 +69,6 @@ print_placement_phase: function that just indicates that we are in the placement
 the game.
 */
 void print_placement_phase();
-
 
 /*
 color_player_penguins: function that highlights the penguins of the player present on the
@@ -98,7 +97,7 @@ Parameters:
 */
 
 #ifdef _WIN64
-void color_tile(COORD tilePosition, Tile **board, int row, int column, int EmptyTile);
+void color_tile(COORD tilePosition, Tile** board, int row, int column, int EmptyTile);
 #endif
 
 /*
@@ -107,20 +106,18 @@ the game.
 */
 void print_movement_phase();
 
-
 /*
 Prints scores of players, thir nickanmes and their number
 */
 
-void print_scores(Player *playersArray, int numberOfPlayers);
-
+void print_scores(Player* playersArray, int numberOfPlayers);
 
 /*
 Changes color of the empty tiles to red
 */
 
 #ifdef _WIN64
-void color_holes(Tile ** board, COORD topBoardPosition, COORD bottomBoardPosition);
+void color_holes(Tile** board, COORD topBoardPosition, COORD bottomBoardPosition);
 #endif
 /*
 suppress_line_buffer: functions that suppress a line on the console
@@ -129,6 +126,5 @@ suppress_line_buffer: functions that suppress a line on the console
 #ifdef _WIN64
 void suppress_line_buffer(COORD messageErrorPosition, short messageLen);
 #endif
-
 
 #endif // !DESIGNFUNCTIONS_H

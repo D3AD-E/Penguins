@@ -1,7 +1,6 @@
 #ifndef VERIFICATIONFUNCTIONS_H
 #define VERIFICATIONFUNCTIONS_H
 
-
 #include "Player.h"
 #include "Tile.h"
 #include "boardFunction.h"
@@ -28,14 +27,14 @@ pseudo_verification: functions that determine if a pseudo is already used by an 
 
 Parameters:
 	pseudoToTest: the pseudo that a player wants to use
-	currentPlayersList: The list containing all the players registered for the moment so as 
+	currentPlayersList: The list containing all the players registered for the moment so as
 	to play a game
 
 Exit:
 	1 ~ Indicates that the pseudo can be use
 	0 ~ Indicates that the pseudo is already taken
 */
-int pseudo_verification(char* pseudoToTest, Player *currentPlayersList, int numberPlayersCurrentlyRegistered);
+int pseudo_verification(char* pseudoToTest, Player* currentPlayersList, int numberPlayersCurrentlyRegistered);
 
 /*
 board_verification: functions that permits to verify if the head master created / launched
@@ -48,19 +47,16 @@ Exit:
 int board_verification();
 
 /*
-filling_board_verification: functions that analyses the board created. Indeed we need to 
+filling_board_verification: functions that analyses the board created. Indeed we need to
 verify  if there are a sufficient number of tiles with only one fish on it.
 
 Parameters:
 	board: the board used for the game
 */
-void filling_board_verification(Tile **board, int numberOfPlayers);
-
-
+void filling_board_verification(Tile** board, int numberOfPlayers);
 
 /*
 check_movement_possible: function that determines if a penguin can effectuate a movement or not
-
 
 PARAMETERS:
 	board ~ board on which we are playing
@@ -69,7 +65,7 @@ PARAMETERS:
 OUTPUT:
 	movementCode: 1 ~ movement possible | 0 ~ movement not possible
 */
-int check_movement_possible(Tile **board, const Position penguinPosition);
+int check_movement_possible(Tile** board, const Position penguinPosition);
 
 /*
 computer_registered_on_file: function that determines if our computer is register on the
@@ -79,8 +75,6 @@ Entry:
 	boardFileName: the name of the file for which we need to verify the presence of our
 	computer's iD.
 */
-short computer_registered_on_file(char *boardFileName);
+short computer_registered_on_file(char* boardFileName);
 
 #endif // VERIFICATIONFUNCTIONS_H
-
-
